@@ -13,12 +13,15 @@ class MainApp:
         self.getallen_rader_box_knop = tk.Button(self.master, text="Getallen rader", command=self.getallen_rader_box)
         self.getallen_rader_box_knop.pack()
 
-        self.dobbelsteen_box_knop = tk.Button(self.master, text="Dobbelsteen", command=self.box)
+        self.dobbelsteen_box_knop = tk.Button(self.master, text="Dobbelsteen", command=self.dobbelsteen_box)
         self.dobbelsteen_box_knop.pack()
 
-    def box(self):
+        self.galgje_box_knop = tk.Button(self.master, text="Galgje", command=self.galgje_box)
+        self.galgje_box_knop.pack()
+
+    def dobbelsteen_box(self):
         self.box = tk.Toplevel(self.master)  # Use Toplevel for a separate window
-        self.box.title("Extra informatie")  # Set title for new box
+        self.box.title("Dobbelsteen")  # Set title for new box
         self.box.withdraw()  # Hide the new box initially
 
         self.dobbel_bericht = tk.Label(self.box, text="Klik op Dobbelen om te rollen")
@@ -33,6 +36,7 @@ class MainApp:
         self.box.deiconify()
 
     def close_new_box(self):
+        self.rolled = False
         self.box.withdraw()  # Hide the new box
 
     def worpen(self):
@@ -46,40 +50,63 @@ class MainApp:
             self.rolled = True
     
     def getallen_rader_box(self):
+        self.getal_box = tk.Toplevel(self.master)  # Use Toplevel for a separate window
+        self.getal_box.title("Getallen rader")  # Set title for new box
+        self.getal_box.withdraw()  # Hide the new box initially
+
+        self.raad_bericht = tk.Label(self.getal_box, text=f"Raad een getal tussen de 1-100")
+        self.raad_bericht.pack()
+
+        self.poging = tk.Entry(self.getal_box)
+        self.poging.bind("<Return>", self.pogingen)
+        self.poging.pack()
+
+        self.check = tk.Button(self.getal_box, text="raden", command=self.pogingen)
+        self.check.pack()
+
+
+        self.getal_box.deiconify()
+
+    def pogingen(self):
+        try:
+            gok = int(self.poging.get())
+
+            if gok == self.te_raden_getal:
+                self.bericht = tk.Label(self.getal_box, text="Gefeliciteerd! Je hebt het getal geraden!")
+            elif gok < self.te_raden_getal:
+                self.bericht = tk.Label(self.getal_box, text="Te laag! Probeer opnieuw.")
+            else:
+                self.bericht = tk.Label(self.getal_box, text="Te hoog! Probeer opnieuw.")
+
+            self.bericht.pack()
+            self.poging.delete(0, tk.END) 
+
+        except ValueError:
+            self.bericht = tk.Label(self.getal_box, text="Ongeldige invoer. Voer een geheel getal in.")
+            self.bericht.pack()
+
+    def galgje_box(self):
         self.box = tk.Toplevel(self.master)  # Use Toplevel for a separate window
-        self.box.title("Getallen rader")  # Set title for new box
+        self.box.title("Galgje")  # Set title for new box
         self.box.withdraw()  # Hide the new box initially
+
+        self.raad_bericht = tk.Label(self.box, text=f"Type een letter om het woord te raden je hebt 5 levens")
+        self.raad_bericht.pack()
 
         self.poging = tk.Entry(self.box)
         self.poging.bind("<Return>", self.pogingen)
         self.poging.pack()
 
-        self.check = tk.Button(self.box, text="raden", command=self.pogingen)
+        self.check = tk.Button(self.box, text="raden", command=self.galgje_pogingen)
         self.check.pack()
 
         self.box.deiconify()
 
-    def pogingen(self):
+    def galgje_pogingen(self):
         try:
-            # Get the user's guess as an integer
-            gok = int(self.poging.get())
-
-            # Check if the guess is correct
-            if gok == self.te_raden_getal:
-                # Display "Gefeliciteerd! Je hebt het getal geraden!"
-                self.bericht = tk.Label(self.box, text="Gefeliciteerd! Je hebt het getal geraden!")
-            elif gok < self.te_raden_getal:
-                # Display "Te laag! Probeer opnieuw."
-                self.bericht = tk.Label(self.box, text="Te laag! Probeer opnieuw.")
-            else:
-                # Display "Te hoog! Probeer opnieuw."
-                self.bericht = tk.Label(self.box, text="Te hoog! Probeer opnieuw.")
-
-            self.bericht.pack()
-            self.poging.delete(0, tk.END)  # Clear the entry field after each guess
-
-        except ValueError:  # Handle invalid input (non-integer)
-            self.bericht = tk.Label(self.box, text="Ongeldige invoer. Voer een geheel getal in.")
+            gok = str(self.poging.get())
+        except ValueError:
+            self.bericht = tk.Label(self.box, text="Ongeldige invoer, probeer opnieuw")
             self.bericht.pack()
 
 if __name__ == "__main__":
